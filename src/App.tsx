@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RegistroEncargados from "@/pages/RegistroEncargados";
 import Home from "@/pages/Home";
+import Play from "@/pages/play/Level1";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
         <Route path="/" element={<RegistroEncargados />} />
 
         <Route path="/home" element={<Home />} />
-
+        <Route path="/juego" element={<Play />} />
         <Route path="*" element={<div>404 - Página no encontrada</div>} />
       </Routes>
     </BrowserRouter>

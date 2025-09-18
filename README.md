@@ -67,3 +67,4 @@ export default tseslint.config([
   },
 ])
 ```
+# Rubic-3x3

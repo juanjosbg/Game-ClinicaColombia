@@ -1,0 +1,137 @@
+import { useState, useEffect } from "react";
+
+const preguntas = [
+  { id: 1, texto: "Recibir un trato digno y respetuoso", tipo: "derecho" },
+  { id: 2, texto: "Cumplir con las normas de la institución", tipo: "deber" },
+  { id: 3, texto: "Acceder a la información de su tratamiento", tipo: "derecho" },
+  { id: 4, texto: "Respetar al personal de salud", tipo: "deber" },
+  { id: 5, texto: "Recibir atención segura", tipo: "derecho" },
+];
+
+function JuegoDerechos() {
+  const [index, setIndex] = useState(0);
+  const [vidas, setVidas] = useState(3);
+  const [terminado, setTerminado] = useState(false);
+  const [tiempo, setTiempo] = useState(0);
+  const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>([]);
+
+  const actual = preguntas[index];
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (!terminado) {
+      timer = setInterval(() => {
+        setTiempo((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [terminado]);
+
+  const formatoTiempo = (segundos: number) => {
+    const hrs = String(Math.floor(segundos / 3600)).padStart(2, "0");
+    const mins = String(Math.floor((segundos % 3600) / 60)).padStart(2, "0");
+    const secs = String(segundos % 60).padStart(2, "0");
+    return `${hrs}:${mins}:${secs}`;
+  };
+
+  const responder = (respuesta: "derecho" | "deber") => {
+    if (respuestasBloqueadas.includes(respuesta)) return;
+
+    if (respuesta === actual.tipo) {
+      setTimeout(() => {
+        if (index + 1 < preguntas.length) {
+          setIndex(index + 1);
+          setRespuestasBloqueadas([]);
+        } else {
+          setTerminado(true);
+        }
+      }, 1000);
+    } else {
+      setRespuestasBloqueadas((prev) => [...prev, respuesta]);
+
+      setVidas((prev) => {
+        if (prev - 1 <= 0) {
+          setTerminado(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }
+  };
+
+  const reiniciar = () => {
+    setIndex(0);
+    setVidas(3);
+    setTerminado(false);
+    setTiempo(0);
+    setRespuestasBloqueadas([]);
+  };
+
+  return (
+    <div className="bg-wp h-dvh relative">
+      <div className="area absolute inset-0 -z-10">
+        <ul className="circles">
+          <li></li><li></li><li></li><li></li><li></li>
+          <li></li><li></li><li></li><li></li><li></li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col items-center justify-center min-h-screen p-6">
+        {!terminado ? (
+          <div className="bg-white shadow-lg rounded-xl p-6 max-w-lg w-full text-center">
+            <div className="flex justify-between mb-4 text-lg font-semibold">
+              <span>❤️ Vidas: {vidas}</span>
+              <span>⏱ {formatoTiempo(tiempo)}</span>
+            </div>
+
+            <h2 className="text-xl font-bold mb-4">¿Es un Derecho o un Deber?</h2>
+            <p className="text-lg mb-6">{actual.texto}</p>
+
+            <div className="flex gap-4 justify-center">
+              {["derecho", "deber"].map((opcion) => {
+                let color = "bg-blue-500 hover:bg-blue-600";
+
+                if (respuestasBloqueadas.includes(opcion)) {
+                  color = "bg-gray-400";
+                } else if (opcion === actual.tipo && respuestasBloqueadas.length > 0) {
+                  color = "bg-green-500"; 
+                }
+
+                return (
+                  <button
+                    key={opcion}
+                    onClick={() => responder(opcion as "derecho" | "deber")}
+                    disabled={respuestasBloqueadas.includes(opcion)}
+                    className={`px-6 py-2 text-white rounded-lg shadow transition ${color}`}
+                  >
+                    {opcion === "derecho" ? "Derecho" : "Deber"}
+                  </button>
+                );
+              })}
+            </div>
+
+            <p className="mt-4 text-gray-600">
+              Pregunta {index + 1} de {preguntas.length}
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white shadow-lg rounded-xl p-6 max-w-lg w-full text-center">
+            <h2 className="text-2xl font-bold mb-4">
+              {vidas === 0 ? "Juego terminado 💀" : "Juego completado 🎉"}
+            </h2>
+            <p className="text-lg mb-2">⏱ Tiempo final: {formatoTiempo(tiempo)}</p>
+            <p className="text-lg">❤️ Vidas restantes: {vidas}</p>
+            <button
+              onClick={reiniciar}
+              className="mt-6 px-6 py-2 bg-purple-500 text-white rounded-lg shadow hover:bg-purple-600"
+            >
+              Volver a jugar
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default JuegoDerechos;
