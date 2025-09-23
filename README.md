@@ -25,8 +25,7 @@ El sistema combina **tecnologías web modernas** con **automatización de flujos
 ## 🛠️ Tecnologías utilizadas
 
 ### Frontend
-- **React** – Librería para construir interfaces dinámicas y modulares.  
-- **Tailwind CSS** – Framework CSS para diseño rápido y responsivo.  
+- **React** – **Tailwind CSS** 
 
 ### Backend / Base de datos
 - **Firebase Firestore** – Base de datos en la nube para almacenar partidas, puntajes y tiempos de respuesta.  
@@ -41,7 +40,7 @@ El sistema combina **tecnologías web modernas** con **automatización de flujos
 ### Otros
 - **Node.js** – Entorno de ejecución para dependencias y herramientas.  
 - **GitHub** – Control de versiones y portafolio del proyecto.  
-
+- **Vercel** 
 ---
 
 ## ⚙️ Flujo del proyecto
