@@ -20,7 +20,9 @@ function JuegoDerechos() {
   const [vidas, setVidas] = useState(3);
   const [terminado, setTerminado] = useState(false);
   const [tiempo, setTiempo] = useState(0);
-  const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>([]);
+  const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>(
+    []
+  );
 
   const actual = preguntas[index];
 
@@ -142,16 +144,16 @@ function JuegoDerechos() {
           </div>
         ) : vidas > 0 ? (
           <div className="bg-white shadow-lg rounded-xl p-6 max-w-lg w-full text-center">
-            <h2 className="text-2xl font-bold mb-4">Juego completado 🎉</h2>
+            <h2 className="text-2xl font-bold mb-4">Nivel 2 completado 🎉</h2>
             <p className="text-lg mb-2">
               ⏱ Tiempo final: {formatoTiempo(tiempo)}
             </p>
             <p className="text-lg">❤️ Vidas restantes: {vidas}</p>
             <button
               onClick={() => {
-                localStorage.setItem("puntajeNivel1", String(vidas));
-                localStorage.setItem("tiempoNivel1", String(tiempo));
-                localStorage.setItem("nivelMaximo", "2");
+                localStorage.setItem("puntajeNivel2", String(vidas));
+                localStorage.setItem("tiempoNivel2", String(tiempo));
+                localStorage.setItem("nivelMaximo", "3");
                 navigate("/home");
               }}
               className="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
