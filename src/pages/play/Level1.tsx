@@ -4,11 +4,7 @@ import { useNavigate } from "react-router-dom";
 const preguntas = [
   { id: 1, texto: "Recibir un trato digno y respetuoso", tipo: "derecho" },
   { id: 2, texto: "Cumplir con las normas de la institución", tipo: "deber" },
-  {
-    id: 3,
-    texto: "Acceder a la información de su tratamiento",
-    tipo: "derecho",
-  },
+  { id: 3, texto: "Acceder a la información de su tratamiento", tipo: "derecho" },
   { id: 4, texto: "Respetar al personal de salud", tipo: "deber" },
   { id: 5, texto: "Recibir atención segura", tipo: "derecho" },
 ];
@@ -21,6 +17,7 @@ function JuegoDerechos() {
   const [terminado, setTerminado] = useState(false);
   const [tiempo, setTiempo] = useState(0);
   const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>([]);
+  const [errores, setErrores] = useState<string[]>([]);
 
   const actual = preguntas[index];
 
@@ -55,6 +52,7 @@ function JuegoDerechos() {
       }, 1000);
     } else {
       setRespuestasBloqueadas((prev) => [...prev, respuesta]);
+      setErrores((prev) => [...prev, actual.texto]);
       setVidas((prev) => {
         if (prev - 1 <= 0) {
           setTerminado(true);
@@ -71,6 +69,7 @@ function JuegoDerechos() {
     setTerminado(false);
     setTiempo(0);
     setRespuestasBloqueadas([]);
+    setErrores([]);
   };
 
   const salir = () => {
@@ -152,6 +151,7 @@ function JuegoDerechos() {
                 localStorage.setItem("puntajeNivel1", String(vidas));
                 localStorage.setItem("tiempoNivel1", String(tiempo));
                 localStorage.setItem("nivelMaximo", "2");
+                localStorage.setItem("erroresNivel1", JSON.stringify(errores)); 
                 navigate("/home");
               }}
               className="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"

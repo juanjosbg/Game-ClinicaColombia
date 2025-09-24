@@ -20,9 +20,8 @@ function JuegoDerechos() {
   const [vidas, setVidas] = useState(3);
   const [terminado, setTerminado] = useState(false);
   const [tiempo, setTiempo] = useState(0);
-  const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>(
-    []
-  );
+  const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>([]);
+  const [errores, setErrores] = useState<string[]>([]);
 
   const actual = preguntas[index];
 
@@ -57,6 +56,7 @@ function JuegoDerechos() {
       }, 1000);
     } else {
       setRespuestasBloqueadas((prev) => [...prev, respuesta]);
+      setErrores((prev) => [...prev, actual.texto]);
       setVidas((prev) => {
         if (prev - 1 <= 0) {
           setTerminado(true);
@@ -73,6 +73,7 @@ function JuegoDerechos() {
     setTerminado(false);
     setTiempo(0);
     setRespuestasBloqueadas([]);
+    setErrores([]);
   };
 
   const salir = () => {
@@ -154,6 +155,7 @@ function JuegoDerechos() {
                 localStorage.setItem("puntajeNivel2", String(vidas));
                 localStorage.setItem("tiempoNivel2", String(tiempo));
                 localStorage.setItem("nivelMaximo", "3");
+                localStorage.setItem("erroresNivel1", JSON.stringify(errores)); 
                 navigate("/home");
               }}
               className="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
