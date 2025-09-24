@@ -30,6 +30,7 @@ export default function RegistroEncargados() {
         creadoEn: new Date(),
       });
 
+      // Solo guarda nombre y área en localStorage
       localStorage.setItem("usuario", JSON.stringify({
         nombre: formData.nombre,
         area: formData.area,
@@ -44,7 +45,6 @@ export default function RegistroEncargados() {
 
   return (
     <div className="">
-      {/* Formulario */}
       <div className="relative isolate px-6 lg:px-8">
         <div className="mx-auto max-w-2xl  sm:py-48 ">
           <div className="text-center">
@@ -56,7 +56,6 @@ export default function RegistroEncargados() {
               onSubmit={handleSubmit}
               className="max-w-sm mx-auto mt-8 space-y-5"
             >
-              {/* Nombre */}
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   Nombre completo
@@ -71,8 +70,6 @@ export default function RegistroEncargados() {
                   required
                 />
               </div>
-
-              {/* Área */}
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   Área del encargado
@@ -87,8 +84,6 @@ export default function RegistroEncargados() {
                   required
                 />
               </div>
-
-              {/* Correo */}
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   Correo electrónico
@@ -103,8 +98,6 @@ export default function RegistroEncargados() {
                   required
                 />
               </div>
-
-              {/* Botón */}
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"

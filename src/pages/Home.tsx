@@ -28,9 +28,7 @@ export default function Home() {
     }
 
     const progreso = localStorage.getItem("nivelMaximo");
-    if (progreso) {
-      setNivelMaximo(Number(progreso));
-    }
+    if (progreso) setNivelMaximo(Number(progreso));
 
     const puntaje1 = localStorage.getItem("puntajeNivel1");
     if (puntaje1) setPuntajeNivel1(Number(puntaje1));
@@ -127,11 +125,6 @@ export default function Home() {
                       ${nivel > nivelMaximo ? "cursor-not-allowed opacity-60" : ""}`}
                   >
                     Nivel {nivel}
-                    {/* {verde && (
-                      <span className="ml-2 text-xs font-bold">
-                        Puntaje: {puntaje}
-                      </span>
-                    )} */}
                     {nivel > nivelMaximo && (
                       <Lock className="w-4 h-4 ml-2 text-gray-500" />
                     )}
@@ -153,7 +146,6 @@ export default function Home() {
                     }, si que eres una persona brillante, animo que ya falta poco.`}
               </p>
 
-              {/* Botón jugar (solo si hay nivel seleccionado) */}
               {nivelSeleccionado && (
                 <div id="start-screen" className="mt-6">
                   <button

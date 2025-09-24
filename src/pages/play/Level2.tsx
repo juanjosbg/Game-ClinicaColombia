@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { db } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const preguntas = [
   { id: 1, texto: "Recibir un trato digno y respetuoso", tipo: "derecho" },
   { id: 2, texto: "Cumplir con las normas de la institución", tipo: "deber" },
-  {
-    id: 3,
-    texto: "Acceder a la información de su tratamiento",
-    tipo: "derecho",
-  },
+  { id: 3, texto: "Acceder a la información de su tratamiento", tipo: "derecho" },
   { id: 4, texto: "Respetar al personal de salud", tipo: "deber" },
   { id: 5, texto: "Recibir atención segura", tipo: "derecho" },
 ];
@@ -22,8 +20,7 @@ function JuegoDerechos() {
   const [tiempo, setTiempo] = useState(0);
   const [respuestasBloqueadas, setRespuestasBloqueadas] = useState<string[]>([]);
   const [errores, setErrores] = useState<string[]>([]);
-
-  const actual = preguntas[index];
+  const [repeticiones, setRepeticiones] = useState(1);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -34,6 +31,11 @@ function JuegoDerechos() {
     }
     return () => clearInterval(timer);
   }, [terminado]);
+
+  useEffect(() => {
+    const rep = localStorage.getItem("repeticionesNivel2");
+    setRepeticiones(rep ? Number(rep) : 1);
+  }, []);
 
   const formatoTiempo = (segundos: number) => {
     const hrs = String(Math.floor(segundos / 3600)).padStart(2, "0");
@@ -74,6 +76,9 @@ function JuegoDerechos() {
     setTiempo(0);
     setRespuestasBloqueadas([]);
     setErrores([]);
+    const nuevaRepeticion = repeticiones + 1;
+    setRepeticiones(nuevaRepeticion);
+    localStorage.setItem("repeticionesNivel2", String(nuevaRepeticion));
   };
 
   const salir = () => {
@@ -84,6 +89,30 @@ function JuegoDerechos() {
       navigate("/home");
     }
   };
+
+  const usuarioLocal = localStorage.getItem("usuario");
+  const usuario = usuarioLocal ? JSON.parse(usuarioLocal) : { nombre: "", area: "" };
+
+  const guardarResultado = async (aprobado: boolean) => {
+    try {
+      await addDoc(collection(db, "resultados_nivel2"), {
+        nombre: usuario.nombre,
+        area: usuario.area,
+        intentos: preguntas.length,
+        preguntasErroneas: errores,
+        cantidadErrores: errores.length,
+        tiempo: formatoTiempo(tiempo),
+        aprobado: aprobado,
+        repitio: repeticiones > 1,
+        repeticiones: repeticiones,
+        fecha: new Date(),
+      });
+    } catch (error) {
+      console.error("Error guardando resultado en Firebase:", error);
+    }
+  };
+
+  const actual = preguntas[index];
 
   return (
     <div className="bg-wp h-dvh relative">
@@ -151,11 +180,12 @@ function JuegoDerechos() {
             </p>
             <p className="text-lg">❤️ Vidas restantes: {vidas}</p>
             <button
-              onClick={() => {
+              onClick={async () => {
                 localStorage.setItem("puntajeNivel2", String(vidas));
                 localStorage.setItem("tiempoNivel2", String(tiempo));
                 localStorage.setItem("nivelMaximo", "3");
-                localStorage.setItem("erroresNivel1", JSON.stringify(errores)); 
+                localStorage.setItem("erroresNivel2", JSON.stringify(errores));
+                await guardarResultado(true);
                 navigate("/home");
               }}
               className="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
@@ -180,7 +210,10 @@ function JuegoDerechos() {
                 Volver a jugar
               </button>
               <button
-                onClick={salir}
+                onClick={async () => {
+                  await guardarResultado(false);
+                  navigate("/home");
+                }}
                 className="mt-6 px-6 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
               >
                 Salir
